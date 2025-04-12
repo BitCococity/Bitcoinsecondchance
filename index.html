@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bitcoin Second Chance 🌍</title>
+  <script src="https://cdn.worldcoin.org/idkit/v1.1.0/idkit.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #0d0d0d;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      color: #ccc;
+    }
+
+    .telegram-link {
+      display: inline-block;
+      background: #0088cc;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 2rem;
+    }
+
+    #world-id-container {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bitcoin Second Chance 🌍</h1>
+  <p>Verifica tu identidad con World ID y únete a nuestra comunidad.</p>
+
+  <div id="world-id-container"></div>
+
+  <a href="https://t.me/bitcoinsecondchance" class="telegram-link" target="_blank">
+    Únete al Telegram 🚀
+  </a>
+
+  <script>
+    window.IDKit.init({
+      app_id: "bitcoinerssecondchance",
+      action: "bitcoinerssecondchance",
+      signal: "hola",
+      onSuccess: (proof) => {
+        console.log("Verificación completada:", proof);
+        alert("✅ ¡Verificado con éxito!");
+      },
+      onError: (error) => {
+        console.error("Error en verificación:", error);
+        alert("❌ Hubo un error al verificar.");
+      },
+    });
+
+    IDKit.mount("#world-id-container");
+  </script>
+</body>
+</html>
