@@ -73,30 +73,42 @@
       text-decoration: none;
       box-shadow: 0 0 10px #00e676;
     }
+
+    .highlight {
+      color: #ffcc00;
+      font-weight: bold;
+      margin-top: 10px;
+      font-size: 1.1rem;
+    }
   </style>
 </head>
 <body>
   <h1>Bitcoin Second Chance 🌍</h1>
-  <p>Verifica tu identidad con World ID y lanza los dados 🎲</p>
+  <p>Verifica tu identidad con World ID y participa en el juego de dados 🎲</p>
 
+  <!-- World ID -->
   <div id="world-id-container"></div>
 
+  <!-- Telegram -->
   <a href="https://t.me/bitcoinsecondchance" class="telegram-link" target="_blank">Únete al Telegram 🚀</a>
 
   <!-- Juego de Dados -->
   <div class="dice-container">
+    <h2 class="highlight">🎯 Saca un 7 para ganar 10 puntos. ¡Mucha suerte!</h2>
     <button class="dice-button" onclick="rollDice()">🎲 Lanzar Dados</button>
     <div class="dice-display" id="dice">🎲 🎲</div>
     <div class="dice-result" id="result">Tira los dados para ver si haces 7</div>
     <div class="dice-result">Puntos: <span id="score">0</span></div>
   </div>
 
+  <!-- Enlace PUF -->
   <a href="https://worldcoin.org/mini-app?app_id=app_15daccf5b7d4ec9b7dbba044a8fdeab5&app_mode=mini-app" 
      target="_blank" class="puf-button">
     🌍 Adquiere más Bitcoin Second Chance
   </a>
 
   <script>
+    // Inicializar World ID
     window.IDKit?.init({
       app_id: "bitcoinerssecondchance",
       action: "bitcoinerssecondchance",
@@ -113,6 +125,7 @@
 
     IDKit?.mount("#world-id-container");
 
+    // Lógica de dados
     let score = 0;
 
     function rollDice() {
