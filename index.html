@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bitcoin Second Chance - Memoria</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bitcoin Second Chance 🌍</title>
   <script src="https://cdn.worldcoin.org/idkit/v1.1.0/idkit.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -34,34 +34,30 @@
       margin: 20px 0;
     }
 
-    #game-board {
-      display: grid;
-      grid-template-columns: repeat(4, 80px);
-      gap: 15px;
-      justify-content: center;
-      margin-top: 30px;
+    .dice-container {
+      margin-top: 40px;
     }
 
-    .card {
-      width: 80px;
-      height: 80px;
-      background-color: #222;
-      border: 2px solid #ff66cc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
+    .dice-display {
+      font-size: 4rem;
+      margin: 10px 0;
+    }
+
+    .dice-button {
+      font-size: 1.2rem;
+      background: #ff66cc;
+      color: white;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 12px;
       cursor: pointer;
-      border-radius: 10px;
-      transition: background 0.3s;
+      font-weight: bold;
+      box-shadow: 0 0 10px #ff66cc;
+      margin-bottom: 10px;
     }
 
-    .card.flipped {
-      background-color: #333;
-    }
-
-    .result {
-      margin-top: 20px;
+    .dice-result {
+      margin-top: 10px;
       font-size: 1.2rem;
       color: #66ffcc;
     }
@@ -81,14 +77,19 @@
 </head>
 <body>
   <h1>Bitcoin Second Chance 🌍</h1>
-  <p>Verifica tu identidad con World ID y juega al memorama Cococity 🧠</p>
+  <p>Verifica tu identidad con World ID y lanza los dados 🎲</p>
 
   <div id="world-id-container"></div>
 
   <a href="https://t.me/bitcoinsecondchance" class="telegram-link" target="_blank">Únete al Telegram 🚀</a>
 
-  <div id="game-board"></div>
-  <div id="message" class="result"></div>
+  <!-- Juego de Dados -->
+  <div class="dice-container">
+    <button class="dice-button" onclick="rollDice()">🎲 Lanzar Dados</button>
+    <div class="dice-display" id="dice">🎲 🎲</div>
+    <div class="dice-result" id="result">Tira los dados para ver si haces 7</div>
+    <div class="dice-result">Puntos: <span id="score">0</span></div>
+  </div>
 
   <a href="https://worldcoin.org/mini-app?app_id=app_15daccf5b7d4ec9b7dbba044a8fdeab5&app_mode=mini-app" 
      target="_blank" class="puf-button">
@@ -96,7 +97,7 @@
   </a>
 
   <script>
-    window.IDKit.init({
+    window.IDKit?.init({
       app_id: "bitcoinerssecondchance",
       action: "bitcoinerssecondchance",
       signal: "hola",
@@ -109,62 +110,28 @@
         alert("❌ Hubo un error al verificar.");
       },
     });
-    IDKit.mount("#world-id-container");
 
-    const icons = ["🍒", "🪙", "🔔", "💎", "⭐", "🍀"];
-    let cards = [...icons, ...icons];
-    let flippedCards = [];
-    let matched = 0;
+    IDKit?.mount("#world-id-container");
 
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
+    let score = 0;
 
-    function createBoard() {
-      const board = document.getElementById("game-board");
-      shuffle(cards);
-      cards.forEach((icon, index) => {
-        const card = document.createElement("div");
-        card.classList.add("card");
-        card.dataset.icon = icon;
-        card.dataset.index = index;
-        card.innerHTML = "";
-        card.addEventListener("click", handleFlip);
-        board.appendChild(card);
-      });
-    }
+    function rollDice() {
+      const die1 = Math.floor(Math.random() * 6) + 1;
+      const die2 = Math.floor(Math.random() * 6) + 1;
+      const sum = die1 + die2;
 
-    function handleFlip(e) {
-      const card = e.currentTarget;
-      if (flippedCards.length >= 2 || card.classList.contains("flipped")) return;
-      card.classList.add("flipped");
-      card.innerHTML = card.dataset.icon;
-      flippedCards.push(card);
-      if (flippedCards.length === 2) {
-        setTimeout(checkMatch, 800);
-      }
-    }
+      const diceSymbols = ["⚀","⚁","⚂","⚃","⚄","⚅"];
+      document.getElementById("dice").textContent = `${diceSymbols[die1 - 1]} ${diceSymbols[die2 - 1]}`;
 
-    function checkMatch() {
-      const [card1, card2] = flippedCards;
-      if (card1.dataset.icon === card2.dataset.icon) {
-        matched++;
-        if (matched === icons.length) {
-          document.getElementById("message").textContent = "🎉 ¡Has encontrado todas las parejas!";
-        }
+      if (sum === 7) {
+        score += 10;
+        document.getElementById("result").textContent = "🎉 ¡Hiciste 7! +10 puntos";
       } else {
-        card1.classList.remove("flipped");
-        card2.classList.remove("flipped");
-        card1.innerHTML = "";
-        card2.innerHTML = "";
+        document.getElementById("result").textContent = `La suma fue ${sum}. Sigue tirando...`;
       }
-      flippedCards = [];
-    }
 
-    createBoard();
+      document.getElementById("score").textContent = score;
+    }
   </script>
 </body>
 </html>
