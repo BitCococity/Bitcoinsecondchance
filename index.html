@@ -95,20 +95,19 @@
   <!-- Juego de Dados -->
   <div class="dice-container">
     <h2 class="highlight">🎯 Saca un 7 para ganar 10 puntos. ¡Mucha suerte!</h2>
-    <button class="dice-button" id="btn-lanzar">🎲 Lanzar Dados</button>
+    <button class="dice-button" onclick="rollDice()">🎲 Lanzar Dados</button>
     <div class="dice-display" id="dice">🎲 🎲</div>
     <div class="dice-result" id="result">Tira los dados para ver si haces 7</div>
     <div class="dice-result">Puntos: <span id="score">0</span></div>
   </div>
 
-  <!-- Enlace PUF -->
+  <!-- Enlace a PUF -->
   <a href="https://worldcoin.org/mini-app?app_id=app_3efe44260e44d2d9470e655ce73c2a44&app_mode=mini-app" 
      target="_blank" class="puf-button">
     🌍 Adquiere más Bitcoin Second Chance
   </a>
 
   <script>
-    // Inicializar World ID
     window.IDKit?.init({
       app_id: "app_3efe44260e44d2d9470e655ce73c2a44",
       action: "bitcoinerssecondchance",
@@ -125,9 +124,7 @@
 
     IDKit?.mount("#world-id-container");
 
-    // Lógica de dados
     let score = 0;
-
     function rollDice() {
       const die1 = Math.floor(Math.random() * 6) + 1;
       const die2 = Math.floor(Math.random() * 6) + 1;
@@ -145,11 +142,6 @@
 
       document.getElementById("score").textContent = score;
     }
-
-    // Asegurar que el botón funcione siempre
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("btn-lanzar").addEventListener("click", rollDice);
-    });
   </script>
 </body>
 </html>
