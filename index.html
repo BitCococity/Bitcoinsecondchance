@@ -80,6 +80,13 @@
       margin-top: 10px;
       font-size: 1.1rem;
     }
+
+    .win-message {
+      font-size: 1.5rem;
+      color: #00e676;
+      margin-top: 20px;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -94,21 +101,22 @@
 
   <!-- Juego de Dados -->
   <div class="dice-container">
-    <h2 class="highlight">🎯 Saca un 7 para ganar 10 puntos. ¡Mucha suerte!</h2>
-    <button class="dice-button" onclick="rollDice()">🎲 Lanzar Dados</button>
+    <h2 class="highlight">🎯 Lanza los dados: si haces un 7, ganas 10 puntos</h2>
+    <button class="dice-button" id="rollBtn">🎲 Lanzar Dados</button>
     <div class="dice-display" id="dice">🎲 🎲</div>
-    <div class="dice-result" id="result">Tira los dados para ver si haces 7</div>
-    <div class="dice-result">Puntos: <span id="score">0</span></div>
+    <div class="dice-result" id="result">Tira los dados para intentarlo</div>
+    <div class="dice-result">Puntos totales: <span id="score">0</span></div>
+    <div id="winMessage" class="win-message">¡Ganaste 10 puntos por sacar un 7!</div>
   </div>
 
-  <!-- Enlace a PUF CORRECTO -->
+  <!-- Enlace a PUF -->
   <a href="https://worldcoin.org/mini-app?app_id=app_15daccf5b7d4ec9b7dbba044a8fdeab5&app_mode=mini-app" 
      target="_blank" class="puf-button">
-    🌍 Adquiere más Bitcoin Second Chance
+    Comprar más Bitcoin Second Chance en PUF
   </a>
 
   <script>
-    // World ID
+    // Inicializar World ID
     window.IDKit?.init({
       app_id: "app_3efe44260e44d2d9470e655ce73c2a44",
       action: "bitcoinerssecondchance",
@@ -127,23 +135,32 @@
 
     // Juego de dados
     let score = 0;
-    function rollDice() {
-      const die1 = Math.floor(Math.random() * 6) + 1;
-      const die2 = Math.floor(Math.random() * 6) + 1;
-      const sum = die1 + die2;
 
-      const diceSymbols = ["⚀","⚁","⚂","⚃","⚄","⚅"];
-      document.getElementById("dice").textContent = `${diceSymbols[die1 - 1]} ${diceSymbols[die2 - 1]}`;
+    document.addEventListener("DOMContentLoaded", () => {
+      const rollBtn = document.getElementById("rollBtn");
+      rollBtn.addEventListener("click", () => {
+        const die1 = Math.floor(Math.random() * 6) + 1;
+        const die2 = Math.floor(Math.random() * 6) + 1;
+        const sum = die1 + die2;
 
-      if (sum === 7) {
-        score += 10;
-        document.getElementById("result").textContent = "🎉 ¡Hiciste 7! +10 puntos";
-      } else {
-        document.getElementById("result").textContent = `La suma fue ${sum}. Sigue tirando...`;
-      }
+        const diceSymbols = ["⚀","⚁","⚂","⚃","⚄","⚅"];
+        document.getElementById("dice").textContent = `${diceSymbols[die1 - 1]} ${diceSymbols[die2 - 1]}`;
 
-      document.getElementById("score").textContent = score;
-    }
+        const result = document.getElementById("result");
+        const winMessage = document.getElementById("winMessage");
+
+        if (sum === 7) {
+          score += 10;
+          result.textContent = "🎉 ¡Hiciste 7! Ganas 10 puntos.";
+          winMessage.style.display = "block";
+        } else {
+          result.textContent = `La suma fue ${sum}. Intenta de nuevo.`;
+          winMessage.style.display = "none";
+        }
+
+        document.getElementById("score").textContent = score;
+      });
+    });
   </script>
 </body>
 </html>
