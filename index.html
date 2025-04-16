@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bitcoin Second Chance 🌍</title>
-  <script src="https://cdn.worldcoin.org/idkit/v1.1.0/idkit.js"></script>
+  <title>Bitcoin Second Chance - Ruleta</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -15,8 +14,10 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-align: center;
+      justify-content: center;
       padding: 20px;
+      min-height: 100vh;
+      text-align: center;
     }
 
     h1 {
@@ -34,32 +35,70 @@
       margin: 20px 0;
     }
 
-    .dice-container {
-      margin-top: 40px;
+    .wheel-container {
+      margin-top: 30px;
     }
 
-    .dice-display {
-      font-size: 4rem;
-      margin: 10px 0;
+    .wheel {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 10px solid #ff00cc;
+      position: relative;
+      overflow: hidden;
+      transform: rotate(0deg);
+      transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
     }
 
-    .dice-button {
+    .segment {
+      width: 50%;
+      height: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: 0% 0%;
+      background: #ffcc00;
+      color: #000;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .pointer {
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 30px solid #00e676;
+      position: absolute;
+      top: -30px;
+      left: calc(50% - 20px);
+    }
+
+    .spin-btn {
+      margin-top: 30px;
+      padding: 12px 24px;
       font-size: 1.2rem;
       background: #ff66cc;
       color: white;
-      padding: 14px 28px;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       cursor: pointer;
       font-weight: bold;
       box-shadow: 0 0 10px #ff66cc;
-      margin-bottom: 10px;
     }
 
-    .dice-result {
-      margin-top: 10px;
+    .result {
+      margin-top: 20px;
       font-size: 1.2rem;
       color: #66ffcc;
+    }
+
+    .score {
+      font-size: 1.5rem;
+      color: #00e676;
+      font-weight: bold;
     }
 
     .puf-button {
@@ -73,40 +112,21 @@
       text-decoration: none;
       box-shadow: 0 0 10px #00e676;
     }
-
-    .highlight {
-      color: #ffcc00;
-      font-weight: bold;
-      margin-top: 10px;
-      font-size: 1.1rem;
-    }
-
-    .win-message {
-      font-size: 1.5rem;
-      color: #00e676;
-      margin-top: 20px;
-      display: none;
-    }
   </style>
 </head>
 <body>
   <h1>Bitcoin Second Chance 🌍</h1>
-  <p>Verifica tu identidad con World ID y participa en el juego de dados 🎲</p>
-
-  <!-- World ID -->
-  <div id="world-id-container"></div>
+  <p>¡Gira la ruleta y gana puntos!</p>
 
   <!-- Telegram -->
   <a href="https://t.me/bitcoinsecondchance" class="telegram-link" target="_blank">Únete al Telegram 🚀</a>
 
-  <!-- Juego de Dados -->
-  <div class="dice-container">
-    <h2 class="highlight">🎯 Lanza los dados: si haces un 7, ganas 10 puntos</h2>
-    <button class="dice-button" id="rollBtn">🎲 Lanzar Dados</button>
-    <div class="dice-display" id="dice">🎲 🎲</div>
-    <div class="dice-result" id="result">Tira los dados para intentarlo</div>
-    <div class="dice-result">Puntos totales: <span id="score">0</span></div>
-    <div id="winMessage" class="win-message">¡Ganaste 10 puntos por sacar un 7!</div>
+  <div class="wheel-container">
+    <div class="pointer"></div>
+    <div class="wheel" id="wheel"></div>
+    <button class="spin-btn" id="spinBtn">🎯 Girar Ruleta</button>
+    <div class="result" id="result">Haz girar la ruleta...</div>
+    <div class="score">Puntos: <span id="score">0</span></div>
   </div>
 
   <!-- Enlace a PUF -->
@@ -116,51 +136,38 @@
   </a>
 
   <script>
-    // Inicializar World ID
-    window.IDKit?.init({
-      app_id: "app_3efe44260e44d2d9470e655ce73c2a44",
-      action: "bitcoinerssecondchance",
-      signal: "hola",
-      onSuccess: (proof) => {
-        console.log("Verificado con ", proof);
-        alert("✅ ¡Verificado con éxito!");
-      },
-      onError: (error) => {
-        console.error("Error en verificación:", error);
-        alert("❌ Hubo un error al verificar.");
-      },
+    const segments = [0, 5, 10, 20, 0, 15];
+    let currentRotation = 0;
+    let score = 0;
+
+    const wheel = document.getElementById("wheel");
+    const result = document.getElementById("result");
+    const scoreDisplay = document.getElementById("score");
+
+    // Crear los segmentos
+    segments.forEach((points, index) => {
+      const segment = document.createElement("div");
+      const angle = index * (360 / segments.length);
+      segment.className = "segment";
+      segment.style.transform = `rotate(${angle}deg) skewY(-60deg)`;
+      segment.textContent = `${points}`;
+      wheel.appendChild(segment);
     });
 
-    IDKit?.mount("#world-id-container");
+    document.getElementById("spinBtn").addEventListener("click", () => {
+      const randomIndex = Math.floor(Math.random() * segments.length);
+      const angle = 360 * 4 + (360 / segments.length) * randomIndex;
+      currentRotation += angle;
+      wheel.style.transform = `rotate(${currentRotation}deg)`;
 
-    // Juego de dados funcional
-    let score = 0;
-    document.addEventListener("DOMContentLoaded", () => {
-      const rollBtn = document.getElementById("rollBtn");
-      const dice = document.getElementById("dice");
-      const result = document.getElementById("result");
-      const scoreDisplay = document.getElementById("score");
-      const winMessage = document.getElementById("winMessage");
-
-      rollBtn.addEventListener("click", () => {
-        const die1 = Math.floor(Math.random() * 6) + 1;
-        const die2 = Math.floor(Math.random() * 6) + 1;
-        const sum = die1 + die2;
-
-        const symbols = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
-        dice.textContent = `${symbols[die1 - 1]} ${symbols[die2 - 1]}`;
-
-        if (sum === 7) {
-          score += 10;
-          result.textContent = "🎉 ¡Hiciste 7! Ganas 10 puntos.";
-          winMessage.style.display = "block";
-        } else {
-          result.textContent = `La suma fue ${sum}. Intenta de nuevo.`;
-          winMessage.style.display = "none";
-        }
-
+      const earned = segments[randomIndex];
+      setTimeout(() => {
+        score += earned;
+        result.textContent = earned > 0
+          ? `¡Ganaste ${earned} puntos!`
+          : "¡Sin suerte esta vez!";
         scoreDisplay.textContent = score;
-      });
+      }, 4000);
     });
   </script>
 </body>
