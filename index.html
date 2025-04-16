@@ -101,13 +101,14 @@
     <div class="dice-result">Puntos: <span id="score">0</span></div>
   </div>
 
-  <!-- Enlace a PUF -->
-  <a href="https://worldcoin.org/mini-app?app_id=app_3efe44260e44d2d9470e655ce73c2a44&app_mode=mini-app" 
+  <!-- Enlace a PUF CORRECTO -->
+  <a href="https://worldcoin.org/mini-app?app_id=app_15daccf5b7d4ec9b7dbba044a8fdeab5&app_mode=mini-app" 
      target="_blank" class="puf-button">
     🌍 Adquiere más Bitcoin Second Chance
   </a>
 
   <script>
+    // World ID
     window.IDKit?.init({
       app_id: "app_3efe44260e44d2d9470e655ce73c2a44",
       action: "bitcoinerssecondchance",
@@ -124,6 +125,7 @@
 
     IDKit?.mount("#world-id-container");
 
+    // Juego de dados
     let score = 0;
     function rollDice() {
       const die1 = Math.floor(Math.random() * 6) + 1;
